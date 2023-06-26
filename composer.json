@@ -1,0 +1,22 @@
+{
+  "name": "freezemage0/cli",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Freezemage",
+      "email": "freezemage0@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "ext-readline": "*",
+    "psr/log": "^3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Freezemage\\Cli\\": "src/"
+    }
+  }
+}
