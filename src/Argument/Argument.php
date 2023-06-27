@@ -8,6 +8,8 @@ interface Argument
 {
     public function name(): string;
 
+    public function shortName(): ?string;
+
     public function type(): ArgumentType;
 
     public function isRequired(): bool;

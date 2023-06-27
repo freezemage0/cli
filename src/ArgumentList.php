@@ -35,7 +35,7 @@ final class ArgumentList implements IteratorAggregate
     public function has(string $arg): bool
     {
         foreach ($this->arguments as $argument) {
-            if ("--{$argument->name}" == $arg || "-{$argument->shortName}" == $arg) {
+            if (in_array($arg, $this->getNames($argument), true)) {
                 return true;
             }
         }
@@ -46,7 +46,7 @@ final class ArgumentList implements IteratorAggregate
     public function get(string $arg): ?Argument
     {
         foreach ($this->arguments as $argument) {
-            if ("--{$argument->name}" == $arg || "-{$argument->shortName}" == $arg) {
+            if (in_array($arg, $this->getNames($argument), true)) {
                 return $argument;
             }
         }
@@ -60,5 +60,14 @@ final class ArgumentList implements IteratorAggregate
         if ($index !== false) {
             unset($this->arguments[$index]);
         }
+    }
+
+    private function getNames(Argument $argument): array
+    {
+        $names = ["--{$argument->name()}"];
+        if ($argument->shortName() !== null) {
+            $names[] = "-{$argument->shortName()}";
+        }
+        return $names;
     }
 }

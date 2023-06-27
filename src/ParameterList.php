@@ -19,6 +19,11 @@ final class ParameterList
         return $this->parameters[$name] ?? null;
     }
 
+    public function getValue(string $name, mixed $default = null): mixed
+    {
+        return $this->parameters[$name]?->value ?? $default;
+    }
+
     public function insert(Parameter $parameter): void
     {
         $this->parameters[$parameter->name] = $parameter;

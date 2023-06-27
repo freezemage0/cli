@@ -2,7 +2,6 @@
 
 namespace Freezemage\Cli\Input;
 
-use DomainException;
 use Freezemage\Cli\Argument\Choice;
 use Freezemage\Cli\Argument\Flag;
 use Freezemage\Cli\Argument\Question;
@@ -13,9 +12,6 @@ use Freezemage\Cli\ParameterList;
 
 class Interactive implements Strategy
 {
-    private int $retries = 0;
-    private int $retryLimit = 5;
-
     public function getParameters(ArgumentList $argumentList): ParameterList
     {
         $parameters = new ParameterList();
@@ -51,8 +47,6 @@ class Interactive implements Strategy
 
     public function confirm(Flag $flag): bool
     {
-        $this->validateRetries();
-
         $choices = ['y', 'n'];
         if (isset($flag->defaultValue)) {
             $position = (int)(!$flag->defaultValue); // true -> 0, false -> 1
@@ -67,19 +61,10 @@ class Interactive implements Strategy
             }
 
             echo "Answer must be one of: [y, n]";
-            $this->retries += 1;
             return $this->confirm($flag);
         }
 
-        $this->retries = 0;
         return $input === 'y';
-    }
-
-    private function validateRetries(): void
-    {
-        if ($this->retries > $this->retryLimit) {
-            throw new DomainException('Retry limit exceeded.');
-        }
     }
 
     public function choice(Choice $choice): string
@@ -94,18 +79,15 @@ class Interactive implements Strategy
         }
 
         $item = (int)readline();
-        if ($item < 1 || $item > $length) {
-            if (isset($default)) {
-                $this->retries = 0;
-                return $default;
+        if (!$choice->isSuitableAnswer($item)) {
+            if (isset($choice->defaultItem)) {
+                return $choice->defaultItem;
             }
 
             echo "Answer must be in range [1, {$length}]\n";
-            $this->retries += 1;
             return $this->choice($choice);
         }
 
-        $this->retries = 0;
         return $item;
     }
 }

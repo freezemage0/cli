@@ -4,7 +4,7 @@ namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
 
-final class Question implements Argument
+final class Question implements Argument, Describable
 {
     public function __construct(
         public string $name,
@@ -27,5 +27,15 @@ final class Question implements Argument
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function shortName(): ?string
+    {
+        return $this->shortName;
+    }
+
+    public function describe(DescriptionService $descriptionService): string
+    {
+        return $descriptionService->describeQuestion($this);
     }
 }

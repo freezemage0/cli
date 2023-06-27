@@ -10,6 +10,6 @@ final class NoAnsi implements PrinterStrategy
         Color $background = null,
         Style $style = null
     ): void {
-        echo $message . "\n";
+        echo $message;
     }
 }

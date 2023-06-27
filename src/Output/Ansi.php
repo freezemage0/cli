@@ -18,6 +18,6 @@ final class Ansi implements PrinterStrategy
 
         $ansi = implode(';', array_filter($ansi));
 
-        echo "\033[{$ansi}m{$message}\n";
+        echo "\033[{$ansi}m{$message}\033[0m";
     }
 }
