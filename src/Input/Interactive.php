@@ -36,10 +36,7 @@ class Interactive implements Strategy
 
         $response = trim(readline());
         if (empty($response)) {
-            if (isset($question->defaultAnswer)) {
-                return $question->defaultAnswer;
-            }
-            return $this->ask($question);
+            return $question->defaultAnswer ?? $this->ask($question);
         }
 
         return $response;
