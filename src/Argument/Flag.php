@@ -38,4 +38,9 @@ final class Flag implements Argument, Describable
     {
         return $this->shortName;
     }
+
+    public function defaultValue(): ?bool
+    {
+        return $this->defaultValue ?? null;
+    }
 }

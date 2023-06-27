@@ -1,14 +1,22 @@
 <?php
 
+
 namespace Freezemage\Cli;
 
 
 use Freezemage\Cli\Command\Help;
+use Freezemage\Cli\Internal\DefaultFinalizer;
+use Freezemage\Cli\Internal\Finalizer;
+
 
 abstract class Application implements CommandProviderInterface
 {
     /** @var array<string, CommandInterface> */
     private array $commands = [];
+
+    public function __construct(private readonly Finalizer $finalizer = new DefaultFinalizer())
+    {
+    }
 
     final public function addCommand(CommandInterface $command): self
     {
@@ -31,22 +39,24 @@ abstract class Application implements CommandProviderInterface
         return new Help($this);
     }
 
-    protected function getGlobalArguments(): ArgumentList {
+    protected function getGlobalArguments(): ArgumentList
+    {
         return new ArgumentList();
     }
 
-    public function run(Input $input = null, Output $output = null): never
+    public function run(Input $input = null, Output $output = null): void
     {
         $input ??= new Input($this->getGlobalArguments());
         $output ??= new Output();
 
-        $command = $this->getCommand($input->getCommandName());
+        $command = !empty($commandName) ? $this->getCommand($input->getCommandName()) : $this->getDefaultCommand();
+
         if (empty($command)) {
             $output->error('No command specified');
-            exit(ExitCode::FAILURE);
+            $this->finalizer->finalize(ExitCode::FAILURE);
         }
 
         $code = $command->execute($input, $output);
-        exit($code->value);
+        $this->finalizer->finalize($code);
     }
 }

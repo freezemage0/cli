@@ -38,4 +38,9 @@ final class Question implements Argument, Describable
     {
         return $descriptionService->describeQuestion($this);
     }
+
+    public function defaultValue(): ?string
+    {
+        return $this->defaultAnswer ?? null;
+    }
 }

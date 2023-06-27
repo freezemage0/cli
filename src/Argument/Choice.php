@@ -51,4 +51,9 @@ final class Choice implements Argument, Describable
     {
         return $this->shortName;
     }
+
+    public function defaultValue(): ?int
+    {
+        return $this->defaultItem ?? null;
+    }
 }

@@ -15,10 +15,10 @@ final class Input
     {
     }
 
-    public function getCommandName(): string
+    public function getCommandName(): ?string
     {
         global $argv;
-        return $argv[1] ?? 'help';
+        return $argv[1] ?? null;
     }
 
     public function getParameter(Argument $argument): Parameter
@@ -27,6 +27,28 @@ final class Input
 
         $parameterList = $strategy->getParameters(new ArgumentList($argument));
         return $parameterList->get($argument->name());
+    }
+
+    public function getParameters(ArgumentList $argumentList): ParameterList
+    {
+        $parameterParser = $this->getParameterParser();
+
+        $globalParameters = $parameterParser->getParameters($this->globalArguments);
+        $parameters = $parameterParser->getParameters($argumentList);
+
+        foreach ($argumentList as $argument) {
+            if (!$parameters->has($argument)) {
+                $defaultValue = $argument->defaultValue();
+
+                if (!isset($defaultValue)) {
+                    throw new DomainException("Missing required parameter.");
+                } else {
+                    $parameters->insert(new Parameter($argument->name(), $defaultValue));
+                }
+            }
+        }
+
+        return $globalParameters->merge($parameters);
     }
 
     private function getParameterParser(): Strategy
@@ -56,21 +78,5 @@ final class Input
     {
         global $argv;
         return in_array('--interactive', $argv, true);
-    }
-
-    public function getParameters(ArgumentList $argumentList): ParameterList
-    {
-        $parameterParser = $this->getParameterParser();
-
-        $globalParameters = $parameterParser->getParameters($this->globalArguments);
-        $parameters = $parameterParser->getParameters($argumentList);
-
-        foreach ($argumentList as $argument) {
-            if ($argument->isRequired() && !$parameters->has($argument)) {
-                throw new DomainException("Missing required parameter.");
-            }
-        }
-
-        return $globalParameters->merge($parameters);
     }
 }

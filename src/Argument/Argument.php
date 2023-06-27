@@ -13,4 +13,6 @@ interface Argument
     public function type(): ArgumentType;
 
     public function isRequired(): bool;
+
+    public function defaultValue();
 }
