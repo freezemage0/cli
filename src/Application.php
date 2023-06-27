@@ -3,6 +3,8 @@
 namespace Freezemage\Cli;
 
 
+use Freezemage\Cli\Command\Help;
+
 abstract class Application implements CommandProviderInterface
 {
     /** @var array<string, CommandInterface> */
@@ -19,6 +21,20 @@ abstract class Application implements CommandProviderInterface
         return $this->commands;
     }
 
+    final public function getCommand(string $name): ?CommandInterface
+    {
+        return $this->commands[$name] ?? $this->getDefaultCommand();
+    }
+
+    protected function getDefaultCommand(): ?CommandInterface
+    {
+        return new Help($this);
+    }
+
+    protected function getGlobalArguments(): ArgumentList {
+        return new ArgumentList();
+    }
+
     public function run(Input $input = null, Output $output = null): never
     {
         $input ??= new Input($this->getGlobalArguments());
@@ -32,12 +48,5 @@ abstract class Application implements CommandProviderInterface
 
         $code = $command->execute($input, $output);
         exit($code->value);
-    }
-
-    abstract public function getGlobalArguments(): ArgumentList;
-
-    final public function getCommand(string $name): ?CommandInterface
-    {
-        return $this->commands[$name] ?? null;
     }
 }
