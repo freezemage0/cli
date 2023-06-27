@@ -2,13 +2,11 @@
 
 namespace Freezemage\Cli\Command;
 
-use Freezemage\Cli\Argument\Argument;
 use Freezemage\Cli\Argument\Choice;
 use Freezemage\Cli\Argument\DescriptionService;
 use Freezemage\Cli\Argument\Flag;
 use Freezemage\Cli\Argument\Question;
 use Freezemage\Cli\ArgumentList;
-use Freezemage\Cli\ArgumentType;
 use Freezemage\Cli\CommandInterface;
 use Freezemage\Cli\CommandProviderInterface;
 use Freezemage\Cli\ExitCode;
@@ -19,23 +17,6 @@ class Help implements CommandInterface, DescriptionService
 {
     public function __construct(private readonly CommandProviderInterface $commandProvider)
     {
-    }
-
-    public function name(): string
-    {
-        return 'help';
-    }
-
-    public function description(): string
-    {
-        return 'Displays help for supported commands or a list of commands if command is not specified.';
-    }
-
-    public function argumentList(): ArgumentList
-    {
-        return new ArgumentList(
-            new Question('command', 'Command to describe', 'list')
-        );
     }
 
     public function execute(Input $input, Output $output): ExitCode
@@ -73,6 +54,23 @@ class Help implements CommandInterface, DescriptionService
         }
 
         return ExitCode::OK;
+    }
+
+    public function argumentList(): ArgumentList
+    {
+        return new ArgumentList(
+            new Question('command', 'Command to describe', 'list')
+        );
+    }
+
+    public function name(): string
+    {
+        return 'help';
+    }
+
+    public function description(): string
+    {
+        return 'Displays help for supported commands or a list of commands if command is not specified.';
     }
 
     public function describeChoice(Choice $choice): string

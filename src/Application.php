@@ -3,8 +3,6 @@
 namespace Freezemage\Cli;
 
 
-use Freezemage\Cli\Argument\Question;
-
 abstract class Application implements CommandProviderInterface
 {
     /** @var array<string, CommandInterface> */
@@ -16,17 +14,10 @@ abstract class Application implements CommandProviderInterface
         return $this;
     }
 
-    final public function getCommand(string $name): ?CommandInterface
-    {
-        return $this->commands[$name] ?? null;
-    }
-
     final public function getCommands(): array
     {
         return $this->commands;
     }
-
-    abstract public function getGlobalArguments(): ArgumentList;
 
     public function run(Input $input = null, Output $output = null): never
     {
@@ -41,5 +32,12 @@ abstract class Application implements CommandProviderInterface
 
         $code = $command->execute($input, $output);
         exit($code->value);
+    }
+
+    abstract public function getGlobalArguments(): ArgumentList;
+
+    final public function getCommand(string $name): ?CommandInterface
+    {
+        return $this->commands[$name] ?? null;
     }
 }

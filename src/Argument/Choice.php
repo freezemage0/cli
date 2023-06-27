@@ -22,6 +22,11 @@ final class Choice implements Argument, Describable
         }
     }
 
+    public function isSuitableAnswer(int $answer): bool
+    {
+        return isset($this->items[$answer - 1]);
+    }
+
     public function type(): ArgumentType
     {
         return ArgumentType::CHOICE;
@@ -35,11 +40,6 @@ final class Choice implements Argument, Describable
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function isSuitableAnswer(int $answer): bool
-    {
-        return isset($this->items[$answer - 1]);
     }
 
     public function describe(DescriptionService $descriptionService): string

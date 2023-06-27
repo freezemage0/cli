@@ -43,6 +43,15 @@ final class ArgumentList implements IteratorAggregate
         return false;
     }
 
+    private function getNames(Argument $argument): array
+    {
+        $names = ["--{$argument->name()}"];
+        if ($argument->shortName() !== null) {
+            $names[] = "-{$argument->shortName()}";
+        }
+        return $names;
+    }
+
     public function get(string $arg): ?Argument
     {
         foreach ($this->arguments as $argument) {
@@ -60,14 +69,5 @@ final class ArgumentList implements IteratorAggregate
         if ($index !== false) {
             unset($this->arguments[$index]);
         }
-    }
-
-    private function getNames(Argument $argument): array
-    {
-        $names = ["--{$argument->name()}"];
-        if ($argument->shortName() !== null) {
-            $names[] = "-{$argument->shortName()}";
-        }
-        return $names;
     }
 }
