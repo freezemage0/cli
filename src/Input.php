@@ -5,7 +5,7 @@ namespace Freezemage\Cli;
 use DomainException;
 use Freezemage\Cli\Argument\Argument;
 use Freezemage\Cli\Input\Interactive;
-use Freezemage\Cli\Input\Multiple;
+use Freezemage\Cli\Input\ComplexStrategy;
 use Freezemage\Cli\Input\NonInteractive;
 use Freezemage\Cli\Input\Strategy;
 
@@ -39,7 +39,7 @@ final class Input
             return new Interactive();
         }
 
-        $multiple = new Multiple();
+        $multiple = new ComplexStrategy();
         $multiple->add(new NonInteractive());
         $multiple->add(new Interactive());
 

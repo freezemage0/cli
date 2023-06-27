@@ -5,7 +5,7 @@ namespace Freezemage\Cli\Input;
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\ParameterList;
 
-final class Multiple implements Strategy
+final class ComplexStrategy implements Strategy
 {
     /** @var list<Strategy> */
     private array $parserStrategies = [];
