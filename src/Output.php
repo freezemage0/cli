@@ -2,6 +2,7 @@
 
 namespace Freezemage\Cli;
 
+use Freezemage\Cli\Internal\ArgvStorage;
 use Freezemage\Cli\Output\Ansi;
 use Freezemage\Cli\Output\Color;
 use Freezemage\Cli\Output\NoAnsi;
@@ -10,6 +11,10 @@ use Freezemage\Cli\Output\Style;
 
 final class Output
 {
+    public function __construct(private readonly ArgvStorage $argvStorage = new ArgvStorage())
+    {
+    }
+
     public function info(string $message, bool $newline = true): void
     {
         $this->write($message, Color::YELLOW, newline: $newline);
@@ -28,9 +33,7 @@ final class Output
 
     private function getPrinterStrategy(): PrinterStrategy
     {
-        global $argv;
-
-        return in_array('--no-ansi', $argv, true) ? new NoAnsi() : new Ansi();
+        return $this->argvStorage->contains('--no-ansi') ? new NoAnsi() : new Ansi();
     }
 
     public function error(string $message, bool $newline = true): void
