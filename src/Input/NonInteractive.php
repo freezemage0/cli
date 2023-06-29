@@ -4,20 +4,23 @@ namespace Freezemage\Cli\Input;
 
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Internal\ArgvStorage;
 use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
 
 class NonInteractive implements Strategy
 {
+
+    public function __construct(private readonly ArgvStorage $storage)
+    {
+    }
+
     public function getParameters(ArgumentList $argumentList): ParameterList
     {
-        global $argv;
-
-        $arguments = $argv; // loose ref;
         $parameters = new ParameterList();
 
-        while (!empty($arguments)) {
-            $arg = array_shift($arguments);
+        for ($i = 0, $length = $this->storage->count(); $i < $length; $i += 1) {
+            $arg = $this->storage->get($i);
 
             $argument = $argumentList->get($arg);
             if (empty($argument)) {
@@ -27,7 +30,8 @@ class NonInteractive implements Strategy
             if ($argument->type() === ArgumentType::FLAG) {
                 $value = true;
             } else {
-                $value = array_shift($arguments);
+                $i += 1;
+                $value = $this->storage->get($i);
             }
 
             $parameters->insert(new Parameter($argument->name(), $value));

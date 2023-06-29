@@ -21,8 +21,10 @@ class Help implements CommandInterface, DescriptionService
 
     public function execute(Input $input, Output $output): ExitCode
     {
+        $input->interactive = false;
+
         $parameters = $input->getParameters($this->argumentList());
-        $commandName = $parameters->get('command')->value;
+        $commandName = $parameters->getValue('command') ?? 'list';
 
         if ($commandName !== 'list') {
             if (!$this->commandProvider->getCommand($commandName)) {
@@ -59,7 +61,7 @@ class Help implements CommandInterface, DescriptionService
     public function argumentList(): ArgumentList
     {
         return new ArgumentList(
-            new Question('command', 'Command to describe', 'list')
+            new Question('command', 'Command to describe', 'list', 'c')
         );
     }
 
@@ -75,7 +77,7 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeChoice(Choice $choice): string
     {
-        $names = implode(', ', array_filter([$choice->name, $choice->shortName]));
+        $names = implode(', ', array_filter(["--{$choice->name}", "-{$choice->shortName}"]));
         $length = count($choice->items);
 
         $description = "{$names} -- {$choice->question}. Must be in range [1, {$length}].";
@@ -90,7 +92,7 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeFlag(Flag $flag): string
     {
-        $names = implode(', ', array_filter([$flag->name, $flag->shortName]));
+        $names = implode(', ', array_filter(["--{$flag->name}", "-{$flag->shortName}"]));
         $description = "{$names} -- {$flag->question}. ";
         if (isset($flag->defaultValue)) {
             $description .= ($flag->defaultValue ? 'Enabled' : 'Disabled') . ' by default.';
@@ -103,7 +105,7 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeQuestion(Question $question): string
     {
-        $names = implode(', ', array_filter([$question->name, $question->shortName]));
+        $names = implode(', ', array_filter(["--{$question->name}", "-{$question->shortName}"]));
         $description = "{$names} -- {$question->question}. ";
         if (isset($question->defaultAnswer)) {
             $description .= "Defaults to '{$question->defaultAnswer}'.";

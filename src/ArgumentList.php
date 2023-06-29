@@ -20,6 +20,11 @@ final class ArgumentList implements IteratorAggregate
         $this->arguments = $arguments;
     }
 
+    public function map(callable $mapper): array
+    {
+        return array_map($mapper, $this->arguments);
+    }
+
     public function insert(Argument $argument): self
     {
         $this->arguments[$argument->name] = $argument;

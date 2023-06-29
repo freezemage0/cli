@@ -9,7 +9,7 @@ final class Flag implements Argument, Describable
     public function __construct(
         public string $name,
         public string $question,
-        public ?bool $defaultValue = null,
+        public bool $defaultValue = false,
         public ?string $shortName = null,
     ) {
     }
@@ -39,8 +39,8 @@ final class Flag implements Argument, Describable
         return $this->shortName;
     }
 
-    public function defaultValue(): ?bool
+    public function defaultValue(): bool
     {
-        return $this->defaultValue ?? null;
+        return $this->defaultValue;
     }
 }

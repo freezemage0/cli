@@ -14,14 +14,14 @@ final class ParameterList
         return isset($this->parameters[$argument->name]);
     }
 
+    public function getValue(string $name): string|int|float|null
+    {
+        return $this->get($name)?->value;
+    }
+
     public function get(string $name): ?Parameter
     {
         return $this->parameters[$name] ?? null;
-    }
-
-    public function getValue(string $name, mixed $default = null): mixed
-    {
-        return $this->parameters[$name]?->value ?? $default;
     }
 
     public function insert(Parameter $parameter): void
