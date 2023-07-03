@@ -30,7 +30,7 @@ abstract class Application implements CommandProviderInterface
 
         $defaultCommand = $this->getDefaultCommand();
         if (isset($defaultCommand)) {
-            $commands[] = $defaultCommand;
+            $commands[$defaultCommand->name()] = $defaultCommand;
         }
         return $commands;
     }
@@ -45,14 +45,16 @@ abstract class Application implements CommandProviderInterface
         $input ??= new Input($this->getGlobalArguments());
         $output ??= new Output();
 
-        $command = !empty($commandName) ? $this->getCommand($input->getCommandName()) : $this->getDefaultCommand();
+        $name = $input->getCommandName();
+        $command = !empty($name) ? $this->getCommand($name) : $this->getDefaultCommand();
+
         if (empty($command)) {
             $output->error('No command specified');
             $this->finalizer->finalize(ExitCode::FAILURE);
+        } else {
+            $code = $command->execute($input, $output);
+            $this->finalizer->finalize($code);
         }
-
-        $code = $command->execute($input, $output);
-        $this->finalizer->finalize($code);
     }
 
     protected function getGlobalArguments(): ArgumentList

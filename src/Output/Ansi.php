@@ -11,8 +11,8 @@ final class Ansi implements PrinterStrategy
         Style $style = null
     ): void {
         $ansi = [
-            $style->value ?? 0,
-            isset($foreground) ? $foreground->value + 30 : null,
+            isset($style) ? $style->value : 0,
+            $foreground->value + 30,
             isset($background) ? $background->value + 40 : null,
         ];
 

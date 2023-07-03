@@ -3,9 +3,10 @@
 namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Parameter;
 use OutOfRangeException;
 
-final class Choice implements Argument, Describable
+final class Choice implements Argument, Describable, Interactable
 {
     public function __construct(
         public string $name,
@@ -55,5 +56,10 @@ final class Choice implements Argument, Describable
     public function defaultValue(): ?int
     {
         return $this->defaultItem ?? null;
+    }
+
+    public function interact(InteractionService $interactionService): Parameter
+    {
+        return $interactionService->interactChoice($this);
     }
 }

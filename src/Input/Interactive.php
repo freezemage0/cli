@@ -2,31 +2,34 @@
 
 namespace Freezemage\Cli\Input;
 
+use DomainException;
 use Freezemage\Cli\Argument\Choice;
 use Freezemage\Cli\Argument\Flag;
+use Freezemage\Cli\Argument\Interactable;
+use Freezemage\Cli\Argument\InteractionService;
 use Freezemage\Cli\Argument\Question;
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\ArgumentType;
 use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
+use InvalidArgumentException;
 
-class Interactive implements Strategy
+
+class Interactive implements Strategy, InteractionService
 {
     public function getParameters(ArgumentList $argumentList): ParameterList
     {
         $parameters = new ParameterList();
         foreach ($argumentList as $argument) {
-            $value = match ($argument->type()) {
-                ArgumentType::QUESTION => $this->ask($argument),
-                ArgumentType::FLAG => $this->confirm($argument),
-                ArgumentType::CHOICE => $this->choice($argument),
-            };
-            $parameters->insert(new Parameter($argument->name, $value));
+            if (!($argument instanceof Interactable)) {
+                throw new InvalidArgumentException('Argument is non-interactable.');
+            }
+            $parameters->insert($argument->interact($this));
         }
         return $parameters;
     }
 
-    public function ask(Question $question): string
+    public function interactQuestion(Question $question): Parameter
     {
         if (isset($question->defaultAnswer)) {
             echo "{$question->question} [default: {$question->defaultAnswer}]: ";
@@ -36,13 +39,17 @@ class Interactive implements Strategy
 
         $response = trim(readline());
         if (empty($response)) {
-            return $question->defaultAnswer ?? $this->ask($question);
+            if (isset($question->defaultAnswer)) {
+                return new Parameter($question->name, $question->defaultAnswer);
+            }
+
+            return $this->interactQuestion($question);
         }
 
-        return $response;
+        return new Parameter($question->name, $response);
     }
 
-    public function confirm(Flag $flag): bool
+    public function interactFlag(Flag $flag): Parameter
     {
         $choices = ['y', 'n'];
         if (isset($flag->defaultValue)) {
@@ -54,17 +61,17 @@ class Interactive implements Strategy
         $input = strtolower(readline());
         if (!in_array($input, $choices)) {
             if (isset($flag->defaultValue)) {
-                return $flag->defaultValue;
+                return new Parameter($flag->name, $flag->defaultValue);
             }
 
             echo "Answer must be one of: [y, n]";
-            return $this->confirm($flag);
+            return $this->interactFlag($flag);
         }
 
-        return $input === 'y';
+        return new Parameter($flag->name, $input === 'y');
     }
 
-    public function choice(Choice $choice): string
+    public function interactChoice(Choice $choice): Parameter
     {
         $choices = $choice->items;
         $length = count($choices);
@@ -78,13 +85,13 @@ class Interactive implements Strategy
         $item = (int)readline();
         if (!$choice->isSuitableAnswer($item)) {
             if (isset($choice->defaultItem)) {
-                return $choice->defaultItem;
+                return new Parameter($choice->name, $choice->defaultItem);
             }
 
             echo "Answer must be in range [1, {$length}]\n";
-            return $this->choice($choice);
+            return $this->interactChoice($choice);
         }
 
-        return $item;
+        return new Parameter($choice->name, $item);
     }
 }

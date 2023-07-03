@@ -14,5 +14,5 @@ interface Argument
 
     public function isRequired(): bool;
 
-    public function defaultValue();
+    public function defaultValue(): mixed;
 }

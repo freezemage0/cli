@@ -3,8 +3,10 @@
 namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Parameter;
 
-final class Question implements Argument, Describable
+
+final class Question implements Argument, Describable, Interactable
 {
     public function __construct(
         public string $name,
@@ -42,5 +44,10 @@ final class Question implements Argument, Describable
     public function defaultValue(): ?string
     {
         return $this->defaultAnswer ?? null;
+    }
+
+    public function interact(InteractionService $interactionService): Parameter
+    {
+        return $interactionService->interactQuestion($this);
     }
 }

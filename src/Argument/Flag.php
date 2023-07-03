@@ -3,13 +3,15 @@
 namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Parameter;
 
-final class Flag implements Argument, Describable
+
+final class Flag implements Argument, Describable, Interactable
 {
     public function __construct(
         public string $name,
         public string $question,
-        public bool $defaultValue = false,
+        public ?bool $defaultValue = false,
         public ?string $shortName = null,
     ) {
     }
@@ -39,8 +41,13 @@ final class Flag implements Argument, Describable
         return $this->shortName;
     }
 
-    public function defaultValue(): bool
+    public function defaultValue(): ?bool
     {
         return $this->defaultValue;
+    }
+
+    public function interact(InteractionService $interactionService): Parameter
+    {
+        return $interactionService->interactFlag($this);
     }
 }

@@ -11,10 +11,10 @@ final class ParameterList
 
     public function has(Argument $argument): bool
     {
-        return isset($this->parameters[$argument->name]);
+        return isset($this->parameters[$argument->name()]);
     }
 
-    public function getValue(string $name): string|int|float|null
+    public function getValue(string $name): string|int|float|bool|null
     {
         return $this->get($name)?->value;
     }

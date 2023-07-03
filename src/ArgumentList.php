@@ -9,7 +9,7 @@ use IteratorAggregate;
 use Traversable;
 
 /**
- * @template-implements Iterator<string, Argument>
+ * @template-implements IteratorAggregate<string, Argument>
  */
 final class ArgumentList implements IteratorAggregate
 {
@@ -27,7 +27,7 @@ final class ArgumentList implements IteratorAggregate
 
     public function insert(Argument $argument): self
     {
-        $this->arguments[$argument->name] = $argument;
+        $this->arguments[$argument->name()] = $argument;
 
         return $this;
     }

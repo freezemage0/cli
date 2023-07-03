@@ -5,7 +5,7 @@ namespace Freezemage\Cli\Internal;
 class ArgvStorage
 {
     /** @var array<int, string> */
-    private static array $argv;
+    private static ?array $argv = null;
 
     public function get(int $position): ?string
     {
@@ -32,7 +32,7 @@ class ArgvStorage
 
     public function findIndex(string $value): ?int
     {
-        return array_search($value, $this->argv(), true);
+        return array_search($value, $this->argv(), true) ?: null;
     }
 
     public function findLastIndex(string $value): ?int

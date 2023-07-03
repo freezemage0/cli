@@ -3,6 +3,7 @@
 namespace Freezemage\Cli\Command;
 
 use Freezemage\Cli\Argument\Choice;
+use Freezemage\Cli\Argument\Describable;
 use Freezemage\Cli\Argument\DescriptionService;
 use Freezemage\Cli\Argument\Flag;
 use Freezemage\Cli\Argument\Question;
@@ -27,20 +28,23 @@ class Help implements CommandInterface, DescriptionService
         $commandName = $parameters->getValue('command') ?? 'list';
 
         if ($commandName !== 'list') {
-            if (!$this->commandProvider->getCommand($commandName)) {
+            $command = $this->commandProvider->getCommand((string) $commandName);
+
+            if (empty($command)) {
                 $output->error("Command {$commandName} not found.");
 
                 return ExitCode::FAILURE;
             }
 
-            $command = $this->commandProvider->getCommand($commandName);
             $output->info('Synopsis');
             $output->info("{$command->name()}: ", false);
             $output->write("{$command->description()}\n");
 
             $info = [];
             foreach ($command->argumentList() as $argument) {
-                $info[] = $argument->describe($this);
+                if ($argument instanceof Describable) {
+                    $info[] = $argument->describe($this);
+                }
             }
 
             $output->info('Arguments');

@@ -21,6 +21,9 @@ class NonInteractive implements Strategy
 
         for ($i = 0, $length = $this->storage->count(); $i < $length; $i += 1) {
             $arg = $this->storage->get($i);
+            if (empty($arg)) {
+                continue;
+            }
 
             $argument = $argumentList->get($arg);
             if (empty($argument)) {

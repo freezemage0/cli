@@ -18,5 +18,8 @@
     "psr-4": {
       "Freezemage\\Cli\\": "src/"
     }
+  },
+  "require-dev": {
+    "vimeo/psalm": "^5.13"
   }
 }

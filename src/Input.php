@@ -14,7 +14,7 @@ final class Input
 {
     public function __construct(
         private readonly ArgumentList $globalArguments,
-        private readonly ?string $defaultCommand = 'help',
+        private readonly string $defaultCommand = 'help',
         private readonly ArgvStorage $argvStorage = new ArgvStorage(),
         public ?bool $interactive = null
     ) {
@@ -26,7 +26,7 @@ final class Input
             return $this->defaultCommand;
         }
 
-        return $this->argvStorage->get(1);
+        return $this->argvStorage->get(1) ?? $this->defaultCommand;
     }
 
     public function getParameter(Argument $argument): ?Parameter
