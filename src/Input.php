@@ -1,22 +1,25 @@
 <?php
 
+
 namespace Freezemage\Cli;
+
 
 use DomainException;
 use Freezemage\Cli\Argument\Argument;
-use Freezemage\Cli\Input\ComplexStrategy;
-use Freezemage\Cli\Input\Interactive;
-use Freezemage\Cli\Input\NonInteractive;
 use Freezemage\Cli\Input\Strategy;
+use Freezemage\Cli\Input\Strategy\Complex;
+use Freezemage\Cli\Input\Strategy\FactoryInterface as StrategyFactory;
 use Freezemage\Cli\Internal\ArgvStorage;
+
 
 final class Input
 {
     public function __construct(
-        private readonly ArgumentList $globalArguments,
-        private readonly string $defaultCommand = 'help',
-        private readonly ArgvStorage $argvStorage = new ArgvStorage(),
-        public ?bool $interactive = null
+            private readonly ArgumentList $globalArguments,
+            private readonly StrategyFactory $strategyFactory,
+            private readonly string $defaultCommand = 'help',
+            private readonly ArgvStorage $argvStorage = new ArgvStorage(),
+            public ?bool $interactive = null
     ) {
     }
 
@@ -40,18 +43,18 @@ final class Input
     private function getParameterParser(): Strategy
     {
         if ($this->isNonInteractive()) {
-            return new NonInteractive($this->argvStorage);
+            return $this->strategyFactory->createNonInteractive();
         }
 
         if ($this->isInteractive()) {
-            return new Interactive();
+            return $this->strategyFactory->createInteractive();
         }
 
-        $multiple = new ComplexStrategy();
-        $multiple->add(new NonInteractive($this->argvStorage));
-        $multiple->add(new Interactive());
+        $complexStrategy = new Complex();
+        $complexStrategy->add($this->strategyFactory->createNonInteractive());
+        $complexStrategy->add($this->strategyFactory->createInteractive());
 
-        return $multiple;
+        return $complexStrategy;
     }
 
     public function isNonInteractive(): bool

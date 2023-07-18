@@ -1,11 +1,14 @@
 <?php
 
-namespace Freezemage\Cli\Input;
+namespace Freezemage\Cli\Input\Strategy;
+
 
 use Freezemage\Cli\ArgumentList;
+use Freezemage\Cli\Input\Strategy;
 use Freezemage\Cli\ParameterList;
 
-final class ComplexStrategy implements Strategy
+
+final class Complex implements Strategy
 {
     /** @var list<Strategy> */
     private array $parserStrategies = [];

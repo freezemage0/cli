@@ -1,12 +1,15 @@
 <?php
 
-namespace Freezemage\Cli\Input;
+namespace Freezemage\Cli\Input\Strategy;
+
 
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Input\Strategy;
 use Freezemage\Cli\Internal\ArgvStorage;
 use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
+
 
 class NonInteractive implements Strategy
 {

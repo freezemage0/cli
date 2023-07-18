@@ -1,15 +1,16 @@
 <?php
 
-namespace Freezemage\Cli\Input;
+namespace Freezemage\Cli\Input\Strategy;
 
-use DomainException;
+
 use Freezemage\Cli\Argument\Choice;
 use Freezemage\Cli\Argument\Flag;
 use Freezemage\Cli\Argument\Interactable;
 use Freezemage\Cli\Argument\InteractionService;
 use Freezemage\Cli\Argument\Question;
 use Freezemage\Cli\ArgumentList;
-use Freezemage\Cli\ArgumentType;
+use Freezemage\Cli\Input\Strategy;
+use Freezemage\Cli\Output;
 use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
 use InvalidArgumentException;
@@ -17,6 +18,10 @@ use InvalidArgumentException;
 
 class Interactive implements Strategy, InteractionService
 {
+    public function __construct(private readonly Output $output)
+    {
+    }
+
     public function getParameters(ArgumentList $argumentList): ParameterList
     {
         $parameters = new ParameterList();
@@ -32,9 +37,9 @@ class Interactive implements Strategy, InteractionService
     public function interactQuestion(Question $question): Parameter
     {
         if (isset($question->defaultAnswer)) {
-            echo "{$question->question} [default: {$question->defaultAnswer}]: ";
+            $this->output->write("{$question->question} [default: {$question->defaultAnswer}]:");
         } else {
-            echo "{$question->question}: ";
+            $this->output->write("{$question->question}:");
         }
 
         $response = trim(readline());
@@ -57,14 +62,15 @@ class Interactive implements Strategy, InteractionService
             $choices[$position] = strtoupper($choices[$position]);
         }
 
-        echo "{$flag->question} [{$choices[0]}/{$choices[1]}]: ";
+        $this->output->write("{$flag->question} [{$choices[0]}/{$choices[1]}]:");
+
         $input = strtolower(readline());
         if (!in_array($input, $choices)) {
             if (isset($flag->defaultValue)) {
                 return new Parameter($flag->name, $flag->defaultValue);
             }
 
-            echo "Answer must be one of: [y, n]";
+            $this->output->error("Answer must be one of: [y, n]");
             return $this->interactFlag($flag);
         }
 
@@ -74,12 +80,10 @@ class Interactive implements Strategy, InteractionService
     public function interactChoice(Choice $choice): Parameter
     {
         $choices = $choice->items;
-        $length = count($choices);
 
-        echo "{$choice->question}: \n";
-
-        for ($i = 1; $i <= $length; $i += 1) {
-            echo "{$i}. {$choices[$i - 1]}\n";
+        $this->output->write("{$choice->question}:");
+        for ($i = 1, $length = count($choices); $i <= $length; $i += 1) {
+            $this->output->write("{$i}. {$choices[$i - 1]}");
         }
 
         $item = (int)readline();
@@ -88,7 +92,7 @@ class Interactive implements Strategy, InteractionService
                 return new Parameter($choice->name, $choice->defaultItem);
             }
 
-            echo "Answer must be in range [1, {$length}]\n";
+            $this->output->error("Answer must be in range [1, {$length}]");
             return $this->interactChoice($choice);
         }
 

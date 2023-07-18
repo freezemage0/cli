@@ -5,6 +5,7 @@ namespace Freezemage\Cli;
 
 
 use Freezemage\Cli\Command\Help;
+use Freezemage\Cli\Input\Strategy\Factory;
 use Freezemage\Cli\Internal\DefaultFinalizer;
 use Freezemage\Cli\Internal\Finalizer;
 
@@ -42,8 +43,8 @@ abstract class Application implements CommandProviderInterface
 
     public function run(Input $input = null, Output $output = null): void
     {
-        $input ??= new Input($this->getGlobalArguments());
         $output ??= new Output();
+        $input ??= new Input($this->getGlobalArguments(), new Factory($output));
 
         $name = $input->getCommandName();
         $command = !empty($name) ? $this->getCommand($name) : $this->getDefaultCommand();
