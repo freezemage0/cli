@@ -48,6 +48,9 @@ class Help implements CommandInterface, DescriptionService
             }
 
             $output->info('Arguments');
+            if (empty($info)) {
+                $info[] = 'No arguments';
+            }
             $output->write(implode("\n", $info));
 
             return ExitCode::OK;
@@ -81,7 +84,12 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeChoice(Choice $choice): string
     {
-        $names = implode(', ', array_filter(["--{$choice->name}", "-{$choice->shortName}"]));
+        $names = ["--{$choice->name}"];
+        if (isset($choice->shortName)) {
+            $names[] = "-{$choice->shortName}";
+        }
+
+        $names = implode(', ', $names);
         $length = count($choice->items);
 
         $description = "{$names} -- {$choice->question}. Must be in range [1, {$length}].";
@@ -96,7 +104,12 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeFlag(Flag $flag): string
     {
-        $names = implode(', ', array_filter(["--{$flag->name}", "-{$flag->shortName}"]));
+        $names = ["--{$flag->name}"];
+        if (isset($flag->shortName)) {
+            $names[] = "-{$flag->shortName}";
+        }
+
+        $names = implode(', ', $names);
         $description = "{$names} -- {$flag->question}. ";
         if (isset($flag->defaultValue)) {
             $description .= ($flag->defaultValue ? 'Enabled' : 'Disabled') . ' by default.';
@@ -109,7 +122,12 @@ class Help implements CommandInterface, DescriptionService
 
     public function describeQuestion(Question $question): string
     {
-        $names = implode(', ', array_filter(["--{$question->name}", "-{$question->shortName}"]));
+        $names = ["--{$question->name}"];
+        if (isset($question->shortName)) {
+            $names[] = "-{$question->shortName}";
+        }
+
+        $names = implode(', ', $names);
         $description = "{$names} -- {$question->question}. ";
         if (isset($question->defaultAnswer)) {
             $description .= "Defaults to '{$question->defaultAnswer}'.";
