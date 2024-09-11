@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli;
 
 enum ArgumentType
 {
-    case FLAG;
-    case CHOICE;
-    case QUESTION;
+    case Flag;
+    case Choice;
+    case Question;
 }

@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Freezemage\Cli;
-
 
 use DomainException;
 use Freezemage\Cli\Argument\Argument;
@@ -10,7 +10,6 @@ use Freezemage\Cli\Input\Strategy;
 use Freezemage\Cli\Input\Strategy\Complex;
 use Freezemage\Cli\Input\Strategy\FactoryInterface as StrategyFactory;
 use Freezemage\Cli\Internal\ArgvStorage;
-
 
 final class Input
 {

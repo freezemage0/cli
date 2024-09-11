@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Internal;
 
 class ArgvStorage
@@ -13,6 +15,9 @@ class ArgvStorage
         return $arguments[$position] ?? null;
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function argv(): array
     {
         global $argv;
@@ -27,18 +32,18 @@ class ArgvStorage
 
     public function contains(string $value): bool
     {
-        return in_array($value, $this->argv(), true);
+        return \in_array($value, $this->argv(), true);
     }
 
     public function findIndex(string $value): ?int
     {
-        return array_search($value, $this->argv(), true) ?: null;
+        return \array_search($value, $this->argv(), true) ?: null;
     }
 
     public function findLastIndex(string $value): ?int
     {
         $arguments = $this->argv();
-        for ($i = count($arguments); $i > 0; $i -= 1) {
+        for ($i = \count($arguments); $i > 0; $i -= 1) {
             $argument = $arguments[$i - 1];
 
             if ($argument === $value) {
@@ -62,11 +67,11 @@ class ArgvStorage
 
     public function map(callable $mapper): array
     {
-        return array_map($mapper, $this->argv());
+        return \array_map($mapper, $this->argv());
     }
 
     public function count(): int
     {
-        return count($this->argv());
+        return \count($this->argv());
     }
 }

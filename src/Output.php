@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli;
 
 use Freezemage\Cli\Internal\ArgvStorage;
@@ -9,7 +11,6 @@ use Freezemage\Cli\Output\NoAnsi;
 use Freezemage\Cli\Output\PrinterStrategy;
 use Freezemage\Cli\Output\Style;
 
-
 final class Output
 {
     public function __construct(private readonly ArgvStorage $argvStorage = new ArgvStorage())
@@ -18,7 +19,7 @@ final class Output
 
     public function write(
             string $message,
-            Color $foreground = Color::DEFAULT,
+            Color $foreground = Color::Default,
             Color $background = null,
             Style $style = null,
             bool $newline = true
@@ -29,7 +30,7 @@ final class Output
 
     public function info(string $message, bool $newline = true): void
     {
-        $this->write($message, Color::YELLOW, newline: $newline);
+        $this->write($message, Color::Yellow, newline: $newline);
     }
 
     private function getPrinterStrategy(): PrinterStrategy
@@ -39,11 +40,11 @@ final class Output
 
     public function error(string $message, bool $newline = true): void
     {
-        $this->write($message, Color::RED, style: Style::BOLD, newline: $newline);
+        $this->write($message, Color::Red, style: Style::Bold, newline: $newline);
     }
 
     public function success(string $message, bool $newline = true): void
     {
-        $this->write($message, Color::GREEN, style: Style::BOLD, newline: $newline);
+        $this->write($message, Color::Green, style: Style::Bold, newline: $newline);
     }
 }

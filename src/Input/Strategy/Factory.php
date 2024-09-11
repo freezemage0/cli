@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Freezemage\Cli\Input\Strategy;
 
-
 use Freezemage\Cli\Internal\ArgvStorage;
 use Freezemage\Cli\Output;
-
 
 class Factory implements FactoryInterface
 {

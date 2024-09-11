@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Freezemage\Cli\Input\Strategy;
-
 
 interface FactoryInterface
 {

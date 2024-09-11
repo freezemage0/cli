@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Command;
 
 use Freezemage\Cli\Argument\Choice;
@@ -16,8 +18,9 @@ use Freezemage\Cli\Output;
 
 class Help implements CommandInterface, DescriptionService
 {
-    public function __construct(private readonly CommandProviderInterface $commandProvider)
-    {
+    public function __construct(
+        private readonly CommandProviderInterface $commandProvider
+    ) {
     }
 
     public function execute(Input $input, Output $output): ExitCode
@@ -28,12 +31,12 @@ class Help implements CommandInterface, DescriptionService
         $commandName = $parameters->getValue('command') ?? 'list';
 
         if ($commandName !== 'list') {
-            $command = $this->commandProvider->getCommand((string) $commandName);
+            $command = $this->commandProvider->getCommand((string)$commandName);
 
             if (empty($command)) {
                 $output->error("Command {$commandName} not found.");
 
-                return ExitCode::FAILURE;
+                return ExitCode::Failure;
             }
 
             $output->info('Synopsis');
@@ -51,9 +54,9 @@ class Help implements CommandInterface, DescriptionService
             if (empty($info)) {
                 $info[] = 'No arguments';
             }
-            $output->write(implode("\n", $info));
+            $output->write(\implode("\n", $info));
 
-            return ExitCode::OK;
+            return ExitCode::Ok;
         }
 
         $output->write('List of available commands');
@@ -62,7 +65,7 @@ class Help implements CommandInterface, DescriptionService
             $output->write($command->description());
         }
 
-        return ExitCode::OK;
+        return ExitCode::Ok;
     }
 
     public function argumentList(): ArgumentList
@@ -89,8 +92,8 @@ class Help implements CommandInterface, DescriptionService
             $names[] = "-{$choice->shortName}";
         }
 
-        $names = implode(', ', $names);
-        $length = count($choice->items);
+        $names = \implode(', ', $names);
+        $length = \count($choice->items);
 
         $description = "{$names} -- {$choice->question}. Must be in range [1, {$length}].";
         if (isset($choice->defaultItem)) {
@@ -109,7 +112,7 @@ class Help implements CommandInterface, DescriptionService
             $names[] = "-{$flag->shortName}";
         }
 
-        $names = implode(', ', $names);
+        $names = \implode(', ', $names);
         $description = "{$names} -- {$flag->question}. ";
         if (isset($flag->defaultValue)) {
             $description .= ($flag->defaultValue ? 'Enabled' : 'Disabled') . ' by default.';
@@ -127,7 +130,7 @@ class Help implements CommandInterface, DescriptionService
             $names[] = "-{$question->shortName}";
         }
 
-        $names = implode(', ', $names);
+        $names = \implode(', ', $names);
         $description = "{$names} -- {$question->question}. ";
         if (isset($question->defaultAnswer)) {
             $description .= "Defaults to '{$question->defaultAnswer}'.";

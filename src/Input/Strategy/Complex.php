@@ -1,12 +1,12 @@
 <?php
 
-namespace Freezemage\Cli\Input\Strategy;
+declare(strict_types=1);
 
+namespace Freezemage\Cli\Input\Strategy;
 
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\Input\Strategy;
 use Freezemage\Cli\ParameterList;
-
 
 final class Complex implements Strategy
 {

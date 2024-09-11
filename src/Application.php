@@ -1,25 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Freezemage\Cli;
-
 
 use Freezemage\Cli\Command\Help;
 use Freezemage\Cli\Input\Strategy\Factory;
 use Freezemage\Cli\Internal\DefaultFinalizer;
 use Freezemage\Cli\Internal\Finalizer;
 
-
 abstract class Application implements CommandProviderInterface
 {
     /** @var array<string, CommandInterface> */
     private array $commands = [];
 
-    public function __construct(private readonly Finalizer $finalizer = new DefaultFinalizer())
-    {
+    public function __construct(
+        private readonly Finalizer $finalizer = new DefaultFinalizer()
+    ) {
     }
 
-    final public function addCommand(CommandInterface $command): self
+    final public function addCommand(CommandInterface $command): static
     {
         $this->commands[$command->name()] = $command;
         return $this;
@@ -51,7 +51,7 @@ abstract class Application implements CommandProviderInterface
 
         if (empty($command)) {
             $output->error('No command specified');
-            $this->finalizer->finalize(ExitCode::FAILURE);
+            $this->finalizer->finalize(ExitCode::Failure);
         } else {
             $code = $command->execute($input, $output);
             $this->finalizer->finalize($code);

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Output;
 
 enum Color: int
 {
-    case BLACK = 0;
-    case RED = 1;
-    case GREEN = 2;
-    case YELLOW = 3;
-    case BLUE = 4;
-    case MAGENTA = 5;
-    case CYAN = 6;
-    case WHITE = 7;
-    case DEFAULT = 9;
+    case Black = 0;
+    case Red = 1;
+    case Green = 2;
+    case Yellow = 3;
+    case Blue = 4;
+    case Magenta = 5;
+    case Cyan = 6;
+    case White = 7;
+    case Default = 9;
 }

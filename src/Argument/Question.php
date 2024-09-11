@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
 use Freezemage\Cli\Parameter;
-
 
 final class Question implements Argument, Describable, Interactable
 {
@@ -18,7 +19,7 @@ final class Question implements Argument, Describable, Interactable
 
     public function type(): ArgumentType
     {
-        return ArgumentType::QUESTION;
+        return ArgumentType::Question;
     }
 
     public function isRequired(): bool

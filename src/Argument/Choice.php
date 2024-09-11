@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Argument;
 
 use Freezemage\Cli\ArgumentType;
@@ -15,9 +17,9 @@ final class Choice implements Argument, Describable, Interactable
         public ?int $defaultItem = null,
         public ?string $shortName = null
     ) {
-        $this->items = array_values($this->items);
+        $this->items = \array_values($this->items);
 
-        $length = count($this->items);
+        $length = \count($this->items);
         if (isset($this->defaultItem) && !$this->isSuitableAnswer($this->defaultItem)) {
             throw new OutOfRangeException("Default choice item MUST be in range [1, {$length}]");
         }
@@ -30,7 +32,7 @@ final class Choice implements Argument, Describable, Interactable
 
     public function type(): ArgumentType
     {
-        return ArgumentType::CHOICE;
+        return ArgumentType::Choice;
     }
 
     public function isRequired(): bool

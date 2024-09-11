@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli;
 
 use ArrayIterator;
 use Freezemage\Cli\Argument\Argument;
-use Iterator;
 use IteratorAggregate;
 use Traversable;
 
@@ -13,6 +14,7 @@ use Traversable;
  */
 final class ArgumentList implements IteratorAggregate
 {
+    /** @var array<Argument> */
     private array $arguments;
 
     public function __construct(Argument ...$arguments)
@@ -22,7 +24,7 @@ final class ArgumentList implements IteratorAggregate
 
     public function map(callable $mapper): array
     {
-        return array_map($mapper, $this->arguments);
+        return \array_map($mapper, $this->arguments);
     }
 
     public function insert(Argument $argument): self
@@ -40,7 +42,7 @@ final class ArgumentList implements IteratorAggregate
     public function has(string $arg): bool
     {
         foreach ($this->arguments as $argument) {
-            if (in_array($arg, $this->getNames($argument), true)) {
+            if (\in_array($arg, $this->getNames($argument), true)) {
                 return true;
             }
         }
@@ -60,7 +62,7 @@ final class ArgumentList implements IteratorAggregate
     public function get(string $arg): ?Argument
     {
         foreach ($this->arguments as $argument) {
-            if (in_array($arg, $this->getNames($argument), true)) {
+            if (\in_array($arg, $this->getNames($argument), true)) {
                 return $argument;
             }
         }
@@ -70,7 +72,7 @@ final class ArgumentList implements IteratorAggregate
 
     public function remove(Argument $argument): void
     {
-        $index = array_search($argument, $this->arguments, true);
+        $index = \array_search($argument, $this->arguments, true);
         if ($index !== false) {
             unset($this->arguments[$index]);
         }

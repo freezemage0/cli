@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Freezemage\Cli\Internal;
 
 use Freezemage\Cli\ExitCode;
-
 
 interface Finalizer
 {

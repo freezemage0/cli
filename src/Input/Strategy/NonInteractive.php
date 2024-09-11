@@ -1,7 +1,8 @@
 <?php
 
-namespace Freezemage\Cli\Input\Strategy;
+declare(strict_types=1);
 
+namespace Freezemage\Cli\Input\Strategy;
 
 use Freezemage\Cli\ArgumentList;
 use Freezemage\Cli\ArgumentType;
@@ -10,12 +11,11 @@ use Freezemage\Cli\Internal\ArgvStorage;
 use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
 
-
-class NonInteractive implements Strategy
+final class NonInteractive implements Strategy
 {
-
-    public function __construct(private readonly ArgvStorage $storage)
-    {
+    public function __construct(
+        private readonly ArgvStorage $storage
+    ) {
     }
 
     public function getParameters(ArgumentList $argumentList): ParameterList
@@ -33,7 +33,7 @@ class NonInteractive implements Strategy
                 continue;
             }
 
-            if ($argument->type() === ArgumentType::FLAG) {
+            if ($argument->type() === ArgumentType::Flag) {
                 $value = true;
             } else {
                 $i += 1;

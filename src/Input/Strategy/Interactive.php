@@ -1,7 +1,8 @@
 <?php
 
-namespace Freezemage\Cli\Input\Strategy;
+declare(strict_types=1);
 
+namespace Freezemage\Cli\Input\Strategy;
 
 use Freezemage\Cli\Argument\Choice;
 use Freezemage\Cli\Argument\Flag;
@@ -15,11 +16,11 @@ use Freezemage\Cli\Parameter;
 use Freezemage\Cli\ParameterList;
 use InvalidArgumentException;
 
-
-class Interactive implements Strategy, InteractionService
+final class Interactive implements Strategy, InteractionService
 {
-    public function __construct(private readonly Output $output)
-    {
+    public function __construct(
+        private readonly Output $output
+    ) {
     }
 
     public function getParameters(ArgumentList $argumentList): ParameterList
@@ -42,7 +43,7 @@ class Interactive implements Strategy, InteractionService
             $this->output->write("{$question->question}:");
         }
 
-        $response = trim(readline());
+        $response = \trim(\readline());
         if (empty($response)) {
             if (isset($question->defaultAnswer)) {
                 return new Parameter($question->name, $question->defaultAnswer);
@@ -59,13 +60,13 @@ class Interactive implements Strategy, InteractionService
         $choices = ['y', 'n'];
         if (isset($flag->defaultValue)) {
             $position = (int)(!$flag->defaultValue); // true -> 0, false -> 1
-            $choices[$position] = strtoupper($choices[$position]);
+            $choices[$position] = \strtoupper($choices[$position]);
         }
 
         $this->output->write("{$flag->question} [{$choices[0]}/{$choices[1]}]:");
 
-        $input = strtolower(readline());
-        if (!in_array($input, $choices)) {
+        $input = \strtolower(\readline());
+        if (!\in_array($input, $choices)) {
             if (isset($flag->defaultValue)) {
                 return new Parameter($flag->name, $flag->defaultValue);
             }
@@ -82,11 +83,11 @@ class Interactive implements Strategy, InteractionService
         $choices = $choice->items;
 
         $this->output->write("{$choice->question}:");
-        for ($i = 1, $length = count($choices); $i <= $length; $i += 1) {
+        for ($i = 1, $length = \count($choices); $i <= $length; $i += 1) {
             $this->output->write("{$i}. {$choices[$i - 1]}");
         }
 
-        $item = (int)readline();
+        $item = (int)\readline();
         if (!$choice->isSuitableAnswer($item)) {
             if (isset($choice->defaultItem)) {
                 return new Parameter($choice->name, $choice->defaultItem);

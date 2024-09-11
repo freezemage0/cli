@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Freezemage\Cli\Input;
 
 use Freezemage\Cli\ArgumentList;
